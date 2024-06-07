@@ -33,6 +33,8 @@ public:
                     ans += temp + " ";
                     break;
                 }
+                else
+                    mp.erase(temp);
             }
             if(!found)
                 ans += word + " ";
