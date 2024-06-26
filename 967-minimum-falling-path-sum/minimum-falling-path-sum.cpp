@@ -1,28 +1,29 @@
 class Solution {
 public:
-    int fun(int i, int j, vector<vector<int>>& mat, vector<vector<int>>& dp)
-    {
-        if(j < 0 || j >= mat[0].size())
-            return INT_MAX;
-        if(i == 0)
-            return mat[i][j];
-        if(dp[i][j] != INT_MAX)
-            return dp[i][j];
-
-        int a = fun(i - 1, j - 1, mat, dp);
-        int b = fun(i - 1, j, mat, dp);
-        int c = fun(i - 1, j + 1, mat, dp);
-        return dp[i][j] = min(min(a, b), c) + mat[i][j]; 
-    }
     int minFallingPathSum(vector<vector<int>>& matrix) {
-        int ans = INT_MAX;
         int m = matrix.size();
         int n = matrix[0].size();
         vector<vector<int>> dp(m, vector<int> (n, INT_MAX));
-        for(int i = 0; i < n; i++)
+        for(int j = 0; j < n; j++)
         {
-            ans = min(ans, fun(m - 1, i, matrix, dp));
+            dp[0][j] = matrix[0][j];
         }
+        for(int i = 1; i < m; i++)
+        {
+            for(int j = 0; j < n; j++)
+            {
+                int a = j - 1 >= 0 ? dp[i - 1][j - 1] : INT_MAX;
+                int b = dp[i - 1][j];
+                int c = j + 1 < n ? dp[i - 1][j + 1] : INT_MAX;
+                dp[i][j] = min(min(a, b), c) + matrix[i][j];
+            }
+        }
+        int ans = INT_MAX;
+        for(int j = 0; j < n; j++)
+        {
+            ans = min(ans, dp[m - 1][j]);
+        }
+
         return ans;
     }
 };
