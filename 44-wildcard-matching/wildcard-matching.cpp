@@ -1,34 +1,25 @@
 class Solution {
 public:
-    bool fun(int i, int j, string& s1, string& s2, vector<vector<int>>& dp)
-    {
-        if (i == -1 && j == -1)
-            return true;
+    bool isMatch(string s, string p) {
+        int m = s.size();
+        int n = p.size();
+        vector<vector<bool>> dp(m + 1, vector<bool>(n + 1, false));
 
-        if (j == -1 && i >= 0)
-            return false;
-
-        if (i == -1 && j >= 0) {
-            for (int k = j; k >= 0; k--)
-                if (s2[k] != '*')
-                    return false;
-            return true;
+        dp[0][0] = true;
+        for (int j = 1; j <= n; j++) {
+            if (p[j - 1] == '*')
+                dp[0][j] = dp[0][j - 1];
         }
 
-        if(dp[i][j] != -1)
-            return dp[i][j];
+        for (int i = 1; i <= m; i++) {
+            for (int j = 1; j <= n; j++) {
+                if (p[j - 1] == '*')
+                    dp[i][j] = dp[i][j - 1] || dp[i - 1][j];
+                else if (p[j - 1] == '?' || s[i - 1] == p[j - 1])
+                    dp[i][j] = dp[i - 1][j - 1];
+            }
+        }
 
-        if (s1[i] == s2[j] || s2[j] == '?')
-            return dp[i][j] = fun(i - 1, j - 1, s1, s2, dp);
-
-        if (s2[j] == '*')
-            return dp[i][j] = fun(i, j - 1, s1, s2, dp) + fun(i - 1, j, s1, s2, dp);
-
-        return dp[i][j] = false;
-    }
-
-    bool isMatch(string s, string p) {
-        vector<vector<int>> dp(s.size(), vector<int>(p.size(), -1));
-        return fun(s.size() - 1, p.size() - 1, s, p, dp);
+        return dp[m][n];
     }
 };
