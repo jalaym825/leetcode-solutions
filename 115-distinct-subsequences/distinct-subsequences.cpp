@@ -1,27 +1,23 @@
 class Solution {
 public:
-    int fun(int i, int j, string &s1, string &s2, vector<vector<int>> &dp)
-    {
-        if(j == -1)
-            return 1;
-        if(i == -1)
-            return 0;
-        
-        if(dp[i][j] != -1)
-            return dp[i][j];
-
-
-        if(s1[i] == s2[j])
-        {
-            return dp[i][j] = fun(i-1, j-1, s1, s2, dp) + fun(i-1, j, s1, s2, dp);
-        }
-        else
-        {
-            return dp[i][j] = fun(i-1, j, s1, s2, dp);
-        }
-    }
     int numDistinct(string s, string t) {
-        vector<vector<int>> dp(s.size(), vector<int>(t.size(), -1));
-        return fun(s.size()-1, t.size()-1, s, t, dp);
+        const int MOD = 1e9 + 7;
+        vector<vector<long long>> dp(s.size() + 1, vector<long long>(t.size() + 1, 0));
+
+        for (int i = 0; i <= s.size(); i++) {
+            dp[i][0] = 1;
+        }
+
+        for (int i = 1; i <= s.size(); i++) {
+            for (int j = 1; j <= t.size(); j++) {
+                if (s[i - 1] == t[j - 1]) {
+                    dp[i][j] = (dp[i - 1][j - 1] + dp[i - 1][j]) % MOD;
+                } else {
+                    dp[i][j] = dp[i - 1][j] % MOD;
+                }
+            }
+        }
+
+        return dp[s.size()][t.size()];
     }
 };
